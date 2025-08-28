@@ -2,9 +2,6 @@
 timeout = 60000
 coverage = true
 
-[test.env]
-NODE_ENV = "test"
-
 coverage-exclude = [
   "**/dist/**",
 ]
