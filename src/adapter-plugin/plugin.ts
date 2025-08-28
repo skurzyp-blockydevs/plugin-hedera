@@ -18,6 +18,7 @@ import { HederaAccountDetails } from "./provider/hederaAccountDetails.ts";
 const configSchema = z.object({
   HEDERA_PRIVATE_KEY: z.string(),
   HEDERA_ACCOUNT_ID: z.string(),
+  HEDERA_NETWORK: z.enum(["mainnet", "testnet", "previewnet"]).default("testnet"),
 });
 
 const produceHederaClient = (
@@ -25,7 +26,23 @@ const produceHederaClient = (
 ): Client => {
   const accountId = String(validatedConfig.HEDERA_ACCOUNT_ID).trim();
   const privateKey = String(validatedConfig.HEDERA_PRIVATE_KEY).trim();
-  return Client.forTestnet().setOperator(accountId, privateKey);
+  const network = validatedConfig.HEDERA_NETWORK;
+  
+  let client: Client;
+  switch (network) {
+    case "mainnet":
+      client = Client.forMainnet();
+      break;
+    case "previewnet":
+      client = Client.forPreviewnet();
+      break;
+    case "testnet":
+    default:
+      client = Client.forTestnet();
+      break;
+  }
+  
+  return client.setOperator(accountId, privateKey);
 };
 
 const hederaPlugin: Plugin = {
@@ -34,6 +51,7 @@ const hederaPlugin: Plugin = {
   config: {
     HEDERA_PRIVATE_KEY: process.env.HEDERA_PRIVATE_KEY,
     HEDERA_ACCOUNT_ID: process.env.HEDERA_ACCOUNT_ID,
+    HEDERA_NETWORK: process.env.HEDERA_NETWORK,
   },
 
   async init(config: Record<string, string>, runtime) {
