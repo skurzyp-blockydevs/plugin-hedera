@@ -1,2 +1,7 @@
 [test]
-preload = ["./src/__tests__/setup-mocks.ts"]
+timeout = 60000
+coverage = true
+
+coverage-exclude = [
+  "**/dist/**",
+]

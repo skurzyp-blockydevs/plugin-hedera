@@ -1,7 +1,5 @@
-*
-
-!dist/**
-!package.json
-!README.md
-!tsup.config.ts
-!LICENSE
+.turbo
+node_modules
+.env
+*.env
+.env.local

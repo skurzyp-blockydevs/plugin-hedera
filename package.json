@@ -1,31 +1,29 @@
 {
-  "name": "@elizaos/plugin-hedera",
-  "version": "1.0.1",
-  "description": "Hedera Hashgraph integration plugin for ElizaOS - enables AI agents to interact with Hedera network services including HCS topics, token operations, and decentralized agent communication",
+  "name": "plugin-hedera",
+  "description": "ElizaOS plugin for Hedera blockchain",
+  "version": "3.0.0",
+  "type": "module",
   "main": "dist/index.js",
   "module": "dist/index.js",
-  "type": "module",
   "types": "dist/index.d.ts",
-  "author": "ElizaOS Contributors",
+  "packageType": "plugin",
+  "platform": "node",
   "license": "MIT",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/elizaos/eliza-plugin-hedera"
-  },
+  "author": "Hashgraph Team",
   "keywords": [
+    "plugin",
     "elizaos",
     "hedera",
-    "hashgraph",
-    "blockchain",
-    "ai-agents",
-    "hcs",
-    "hedera-consensus-service",
-    "web3",
-    "plugin"
+    "hedera-agent-kit"
   ],
-  "files": [
-    "dist"
-  ],
+  "repository": {
+    "type": "git",
+    "url": ""
+  },
+  "homepage": "https://elizaos.ai",
+  "bugs": {
+    "url": "https://github.com/elizaos-plugins/plugin-hedera/issues"
+  },
   "exports": {
     "./package.json": "./package.json",
     ".": {
@@ -35,65 +33,75 @@
       }
     }
   },
+  "files": [
+    "dist",
+    "README.md",
+    ".npmignore",
+    ".gitignore",
+    "package.json",
+    "tsup.config.ts"
+  ],
   "dependencies": {
-    "@elizaos/core": "^1.0.15",
-    "@hashgraph/sdk": "^2.64.5",
-    "@hashgraphonline/standards-agent-kit": "^0.0.27",
-    "@hashgraphonline/standards-sdk": "^0.0.111",
-    "bignumber.js": "^9.1.2",
-    "dotenv": "^16.4.7",
-    "@hashgraphonline/hedera-agent-kit": "0.0.16",
-    "tsup": "8.5.0",
-    "zod": "^3.25.17"
-  },
-  "scripts": {
-    "build": "tsup",
-    "dev": "tsup --watch",
-    "lint": "prettier --write ./src",
-    "clean": "rm -rf dist .turbo node_modules .turbo-tsconfig.json tsconfig.tsbuildinfo",
-    "format": "prettier --write ./src",
-    "format:check": "prettier --check ./src",
-    "test": "bun test",
-    "test:watch": "bun test --watch",
-    "test:coverage": "bun test --coverage"
+    "@elizaos/core": "1.4.2",
+    "@elizaos/plugin-bootstrap": "1.4.2",
+    "@elizaos/plugin-ollama": "1.2.4",
+    "@elizaos/plugin-openai": "1.0.10",
+    "@hashgraph/sdk": "2.68.0",
+    "hedera-agent-kit": "3.2.0",
+    "zod": "^3.24.4"
   },
   "devDependencies": {
+    "@elizaos/cli": "latest",
     "@eslint/js": "^9.20.0",
     "@typescript-eslint/eslint-plugin": "^8.24.0",
     "@typescript-eslint/parser": "^8.24.0",
     "eslint": "^9.20.1",
     "eslint-config-prettier": "^10.0.1",
-    "prettier": "^3.5.0",
-    "typescript": "^5.7.3",
-    "bun": "latest",
-    "@types/bun": "latest"
+    "dotenv": "16.4.5",
+    "prettier": "3.5.3",
+    "tsup": "8.5.0",
+    "typescript": "5.8.2"
+  },
+  "scripts": {
+    "start": "elizaos start",
+    "dev": "elizaos dev",
+    "build": "tsc --noEmit && tsup",
+    "postinstall": "node -e \"const fs=require('fs');const path=require('path');const zodPath=path.join('node_modules','zod');if(fs.existsSync(zodPath)){fs.writeFileSync(path.join(zodPath,'v3.js'),'module.exports=require(\\\"./lib/index.js\\\");');fs.writeFileSync(path.join(zodPath,'v3.d.ts'),'export * from \\\"./lib/index\\\";');}\" || true",
+    "test": "bun test",
+    "format": "prettier --write ./src",
+    "prettify": "prettier --check .",
+    "prettify:fix": "prettier --write .",
+    "lint": "eslint . --ext .ts,.js,.mjs",
+    "lint:fix": "eslint . --ext .ts,.js,.mjs --fix"
   },
   "publishConfig": {
     "access": "public"
   },
+  "resolutions": {
+    "// Note": "langchain 0.3.30 fixes @langchain/core zod/v3 import issues",
+    "zod": "^3.24.4",
+    "langchain": "0.3.30",
+    "@langchain/core": "0.3.30"
+  },
+  "overrides": {
+    "@langchain/core": "0.3.30"
+  },
   "agentConfig": {
-    "pluginType": "elizaos:plugin:1.0.0",
+    "pluginType": "elizaos:plugin:3.0.0",
     "pluginParameters": {
-      "HEDERA_PRIVATE_KEY": {
-        "type": "string",
-        "description": "Accepts ED25519 and ECDSA private keys both DER and HEX encoded",
-        "required": true,
-        "sensitive": true
-      },
       "HEDERA_ACCOUNT_ID": {
         "type": "string",
-        "description": "Example: 0.0.5392887",
-        "required": true,
-        "sensitive": false
+        "description": "Id/address of Hedera account (ex. 0.X.XXXXXX)"
       },
-      "HEDERA_AGENT_MODE": {
+      "HEDERA_PRIVATE_KEY": {
         "type": "string",
-        "description": "Example: 'provideBytes' or 'directExecution'",
-        "default": "provideBytes",
-        "required": false,
-        "sensitive": false
+        "description": "Private key for Hedera account. Accepts ED25519 and ECDSA private keys both DER and HEX encoded"
+      },
+      "HEDERA_NETWORK": {
+        "type": "string",
+        "description": "Hedera network to connect to (mainnet, testnet, or previewnet)",
+        "default": "testnet"
       }
     }
-  },
-  "packageManager": "pnpm@9.15.7+sha512.ed98f9c748442673c46964b70345bd2282c9b305e8eae539b34ab31d6ef24ef8dd59d8b55f27466f705500b009d9c113471cf87e544f3d5036b297330c26e996"
+  }
 }
