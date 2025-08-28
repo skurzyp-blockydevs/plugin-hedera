@@ -1,7 +1,10 @@
 {
   "compilerOptions": {
     "outDir": "dist",
-    "lib": ["ESNext", "dom"],
+    "lib": [
+      "ESNext",
+      "dom"
+    ],
     "target": "ESNext",
     "module": "Preserve",
     "moduleResolution": "Bundler",
@@ -23,6 +26,13 @@
     "isolatedModules": false,
     "noEmit": true
   },
-  "include": ["src/**/*.ts"],
-  "exclude": ["src/__tests__/**/*", "e2e/**/*", "**/*.test.ts", "**/*.spec.ts"]
+  "include": [
+    "src/**/*.ts"
+  ],
+  "exclude": [
+    "src/__tests__/**/*",
+    "e2e/**/*",
+    "**/*.test.ts",
+    "**/*.spec.ts"
+  ]
 }
