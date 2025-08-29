@@ -57,7 +57,6 @@ pglite/
 cache/
 
 generatedImages/
-images/
 data/
 .eliza
 .elizadb-test
