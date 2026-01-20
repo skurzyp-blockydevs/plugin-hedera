@@ -68,6 +68,7 @@
     "start": "elizaos start",
     "dev": "elizaos dev",
     "build": "tsc --noEmit && tsup",
+    "postinstall": "node -e \"const fs=require('fs');const path=require('path');const zodPath=path.join('node_modules','zod');if(fs.existsSync(zodPath)){fs.writeFileSync(path.join(zodPath,'v3.js'),'module.exports=require(\\\"./lib/index.js\\\");');fs.writeFileSync(path.join(zodPath,'v3.d.ts'),'export * from \\\"./lib/index\\\";');}\" || true",
     "test": "bun test",
     "format": "prettier --write ./src",
     "prettify": "prettier --check .",
@@ -88,6 +89,11 @@
       "HEDERA_PRIVATE_KEY": {
         "type": "string",
         "description": "Private key for Hedera account. Accepts ED25519 and ECDSA private keys both DER and HEX encoded"
+      },
+      "HEDERA_NETWORK": {
+        "type": "string",
+        "description": "Hedera network to connect to (mainnet, testnet, or previewnet)",
+        "default": "testnet"
       }
     }
   }
