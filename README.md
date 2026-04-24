@@ -57,6 +57,27 @@ These capabilities come from Hedera Agent Kit (HAK) and are surfaced as ElizaOS 
 - It validates your Hedera credentials, creates a Hedera client (testnet by default), and registers a set of blockchain tools (actions) with the agent runtime.
 - Agent prompts/plans then invoke these tools to perform on‑chain operations and return results back into the conversation.
 
+
+- **Migration Note**: This plugin is migrated to `hedera-agent-kit-v4`.
+- The new version supports **Hooks and Policies** (e.g., spending limits, audit trails, and custom validations) which cannot be fully configured via the ElizaOS frontend/CLI alone.
+- To use hooks and policies, you must clone this repository and manually edit the `context` in `src/adapter-plugin/plugin.ts`:
+
+```
+context: {
+  mode: AgentMode.AUTONOMOUS,
+  hooks: [
+    // Add your hooks and policies here
+  ],
+},
+```
+
+- For examples and detailed guides on how to implement policies:
+  - [Hedera AI Agent Kit - Hooks and Policies Docs](https://docs.hedera.com/hedera/open-source-solutions/ai-studio-on-hedera/hedera-ai-agent-kit/hooks-and-polices)
+  - [Policy Enforcement Agent Example](https://github.com/hashgraph/hedera-agent-kit-js/blob/main/examples/langchain-v1/policy-enforcement-agent.ts)
+  - [Audit Trail Agent Example](https://github.com/hashgraph/hedera-agent-kit-js/blob/main/examples/langchain-v1/audit-trail-agent.ts)
+
+
+
 ## Common use cases
 
 - Autonomous token treasuries and spend controls on testnet

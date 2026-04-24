@@ -3,6 +3,9 @@ import { logger } from "@elizaos/core";
 import { z } from "zod";
 import {
   AgentMode,
+  Configuration,
+} from "@hashgraph/hedera-agent-kit";
+import {
   coreAccountPlugin,
   coreConsensusPlugin,
   coreTokenPlugin,
@@ -10,10 +13,12 @@ import {
   coreAccountQueryPlugin,
   coreConsensusQueryPlugin,
   coreEVMPlugin,
-  Configuration,
-} from "hedera-agent-kit";
-import { HederaElizaOSToolkit } from "hedera-agent-kit/elizaos";
-import { Client } from "@hashgraph/sdk";
+  coreEVMQueryPlugin,
+  coreMiscQueriesPlugin,
+  coreTransactionQueryPlugin,
+} from "@hashgraph/hedera-agent-kit/plugins";
+import { HederaElizaOSToolkit } from "@hashgraph/hedera-agent-kit-elizaos";
+import { Client, PrivateKey } from "@hiero-ledger/sdk";
 import { HederaAccountDetails } from "./provider/hederaAccountDetails.ts";
 
 const configSchema = z.object({
@@ -26,7 +31,10 @@ const produceHederaClient = (
   validatedConfig: z.infer<typeof configSchema>
 ): Client => {
   const accountId = String(validatedConfig.HEDERA_ACCOUNT_ID).trim();
-  const privateKey = String(validatedConfig.HEDERA_PRIVATE_KEY).trim();
+  const privateKey = PrivateKey.fromString(
+    String(validatedConfig.HEDERA_PRIVATE_KEY).trim()
+  );
+
   const network = validatedConfig.HEDERA_NETWORK;
   
   let client: Client;
@@ -73,14 +81,18 @@ const hederaPlugin: Plugin = {
         plugins: [
           coreTokenPlugin,
           coreTokenQueryPlugin,
+          coreAccountPlugin,
           coreAccountQueryPlugin,
           coreConsensusQueryPlugin,
-          coreAccountPlugin,
           coreConsensusPlugin,
           coreEVMPlugin,
+          coreEVMQueryPlugin,
+          coreMiscQueriesPlugin,
+          coreTransactionQueryPlugin,
         ],
         context: {
           mode: AgentMode.AUTONOMOUS,
+          hooks: [],
         },
       };
 
