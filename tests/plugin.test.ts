@@ -89,13 +89,7 @@ describe("Hedera Plugin - Real Private Key Validation", () => {
   });
 
   it("should fail for an invalid key string", async () => {
-    try {
-      await runInit("not-a-key");
-      expect(true).toBe(false); // Should not reach here
-    } catch (error: any) {
-      // The SDK throws a specific error message
-      expect(error.message).toBeDefined();
-    }
+    await expect(runInit("not-a-key")).rejects.toThrow();
   });
 });
 
